@@ -14,7 +14,6 @@ const movement = {
 }
 window.addEventListener("keydown", function(event){
     movement.click = true;
-    console.log(event);
     player.move(event.key);
 });
 window.addEventListener("keyup", function(event){
@@ -37,7 +36,6 @@ class Player {
         ctx.drawImage(playersprite, this.x, this.y, this.width, this.height);
     }
     move(key){
-        console.log(key);
         if (key == "ArrowRight" && player.x < 550){this.x += 50;}
         if (key == "ArrowLeft" && player.x > 50){this.x -= 50;}
         if (key == "ArrowUp" && player.y > 50){this.y -= 50;}
@@ -47,11 +45,11 @@ class Player {
 const player = new Player();
 
 //bubbles
-const bubblesArray = [];
+let bubblesArray = [];
 class Bubble {
     constructor(){
         this.x =canvas.width + 50;
-        this.y = Math.random() * canvas.height;
+        this.y = (Math.random() * (canvas.height - 150)) + 75;
         this.radius = 25;
         this.speed = Math.random() * 2 + 1;
         this.distance;
@@ -62,6 +60,8 @@ class Bubble {
         const dx = this.x - player.x;
         const dy = this.y - player.y;
         this.distance = Math.sqrt(dx*dx + dy*dy);
+        this.speed += score/5000;
+        console.log(this.speed);
     }
     draw(){
         ctx.fillStyle = 'black';
@@ -79,12 +79,6 @@ function handleBubbles(){
     }
     for (let i = 0; i < bubblesArray.length; i++){
         bubblesArray[i].update();
-        bubblesArray[i].draw();  
-    }
-    for (let i = 0; i< bubblesArray.length; i++){
-        if (bubblesArray[i].y < 0 - bubblesArray[i].radius * 2){
-            bubblesArray.splice(i, 1);
-        }
         if (bubblesArray[i].distance < bubblesArray[i].radius + player.position){
             if (!bubblesArray[i].counted){
                 score++;
@@ -92,12 +86,22 @@ function handleBubbles(){
                 bubblesArray.splice(i, 1);
             }
         }
+        if (bubblesArray[i].x < 75){
+            score--;
+            bubblesArray.splice(i, 1);
+        }
+        bubblesArray[i].draw();  
     }
 }
+let timer;
 
 restart.addEventListener('click', resetCanvas);
 function resetCanvas(){
     score = 0;
+    bubblesArray = [];
+    console.log(bubblesArray);
+    cancelAnimationFrame(timer);
+    animate();
 }
 
 function animate(){
@@ -107,6 +111,6 @@ function animate(){
     ctx.fillStyle = 'black';
     ctx.fillText('score: ' + score, 60, 34);
     gameFrame++;
-    requestAnimationFrame(animate);
+    timer = requestAnimationFrame(animate);
 }
 animate();
