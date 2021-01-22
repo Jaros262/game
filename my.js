@@ -12,13 +12,13 @@ let gameFrame = 0;
 
 /*-------------------------Sounds-------------------------*/
 const break1 = document.createElement('audio');
-break1.src = 'sounds/break1.ogg';
+break1.src = 'https://opengameart.org/sites/default/files/boulder_drop_0.ogg';
 const break2 = document.createElement('audio');
-break2.src = 'sounds/break2.ogg';
+break2.src = 'https://opengameart.org/sites/default/files/rock_break_0.ogg';
 const hurt = document.createElement('audio');
-hurt.src = 'sounds/hurt.mp3';
+hurt.src = 'https://opengameart.org/sites/default/files/ouch1_1.mp3';
 const gameOver = document.createElement('audio');
-gameOver.src = 'sounds/GameOver.ogg';
+gameOver.src = 'https://opengameart.org/sites/default/files/GameOver_2.ogg';
 break1.volume = 0.1;
 break2.volume = 0.1;
 hurt.volume = 0.1;
