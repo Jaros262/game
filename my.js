@@ -8,7 +8,83 @@ canvas.width = 650;
 canvas.height = 650;
 let score = 0;
 let gameFrame = 0;
+let timer;
+let intro;
 /*--------------------------Ints--------------------------*/
+
+/*--------------------------Menu--------------------------*/
+class Menu {
+    constructor(){
+        this.x = 0;
+        this.y = 0;
+        this.width = 650;
+        this.height = 650;
+    }
+    draw(){
+        ctx.beginPath();
+        ctx.fillStyle = "gray";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle = 'black';
+        ctx.font = '35px Arial';
+        ctx.fillText("Menu", canvas.width/2 -45, canvas.height/2 - 200);
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+    }
+}
+const menu = new Menu();
+
+class PlayB {
+    static DEFAULT_SIZE = 200;
+    constructor(){
+        this.x = canvas.width/2 - 75;
+        this.y = canvas.height/2 - 180;
+        this.width = 150;
+        this.height = 50;
+        this.size = PlayB.DEFAULT_SIZE;
+        this.pressed = false;
+
+    }
+    clicked(){
+        cancelAnimationFrame(intro);
+        animate();
+    }
+    draw() {
+        ctx.beginPath();
+        ctx.fillStyle = "black";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.fillStyle = 'white';
+        ctx.font = '35px Habana';
+        ctx.fillText('Play', this.x + 40, this.y + 38);
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+    }
+    clickPlayb(mouseX, mouseY) {
+        if (mouseX >= playb.x && mouseX <= playb.x + playb.width && mouseY >= playb.y && mouseY <= playb.y + playb.height && this.pressed == true) { 
+            this.clicked();
+        } 
+    }
+}
+const playb = new PlayB();
+
+function animateMenu(){
+    menu.draw();
+    playb.draw();
+    intro = requestAnimationFrame(animateMenu);
+}
+animateMenu();
+/*--------------------------Menu--------------------------*/
 
 /*-------------------------Sounds-------------------------*/
 const break1 = document.createElement('audio');
@@ -25,7 +101,29 @@ hurt.volume = 0.1;
 gameOver.volume = 0.2;
 /*-------------------------Sounds-------------------------*/
 
+/*----------------------Game Objects----------------------*/
+const playersprite = new Image();
+playersprite.src = "GameObj/wiz1.png";
+const livessprite1 = new Image();
+livessprite1.src = "GameObj/1h.png";
+const livessprite2 = new Image();
+livessprite2.src = "GameObj/2h.png";
+const livessprite3 = new Image();
+livessprite3.src = "GameObj/3h.png";
+/*----------------------Game Objects----------------------*/
+
 /*-----------------------Keybodard------------------------*/
+canvas.addEventListener('mousedown', (event) => { 
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    playb.pressed = true;
+    playb.clickPlayb(x, y);             
+});
+canvas.addEventListener('mouseup', () => { 
+    playb.pressed = false;             
+});
+
 const movement = {
     x: 50,
     y: 50,
@@ -41,8 +139,7 @@ window.addEventListener("keyup", function(event){
 /*-----------------------Keyboard------------------------*/
 
 /*------------------------Player-------------------------*/
-const playersprite = new Image();
-playersprite.src = "person.png";
+
 class Player {
     constructor(){
         this.x = canvas.width-600;
@@ -57,7 +154,7 @@ class Player {
         ctx.drawImage(playersprite, this.x, this.y, this.width, this.height);
     }
     move(key){
-        if (key == "ArrowRight" && player.x < 550){this.x += 50;}
+        if (key == "ArrowRight" && player.x < 600){this.x += 50;}
         if (key == "ArrowLeft" && player.x > 50){this.x -= 50;}
         if (key == "ArrowUp" && player.y > 50){this.y -= 50;}
         if (key == "ArrowDown" && player.y < 550){this.y += 50;}
@@ -73,7 +170,7 @@ class Bubble {
         this.x = canvas.width + 50;
         this.y = (Math.random() * (canvas.height - 150)) + 75;
         this.radius = 25;
-        this.speed = Math.random() * 2 + 1;
+        this.speed = Math.random() * 1.5 + 1;
         this.distance;
         this.counted = false;
         this.sound = Math.random() <= 0.5 ? 'sound1' : 'sound2';
@@ -126,12 +223,7 @@ function handleBubbles(){
 /*-----------------------Objects-------------------------*/
 
 /*---------------------Properties------------------------*/
-const livessprite1 = new Image();
-livessprite1.src = "1.png";
-const livessprite2 = new Image();
-livessprite2.src = "2.png";
-const livessprite3 = new Image();
-livessprite3.src = "3.png";
+
 class Lives {
     constructor(){
         this.const = 3;
@@ -162,25 +254,6 @@ class Lives {
 const lives = new Lives();
 /*---------------------Properties------------------------*/
 
-/*----------------------Game Over------------------------*/
-let end = {
-    update: function(){
-        if (lives.const == 0){
-            
-            animateGameOver();
-        }
-    }
-}
-
-function animateGameOver(){
-    ctx.fillStyle = 'red';
-    ctx.font = '50px Habana';
-    ctx.fillText("GAME OVER", canvas.width/2 - 120, canvas.height/2);
-    gameOver.play();
-    cancelAnimationFrame();
-}
-/*----------------------Game Over------------------------*/
-
 /*-----------------------Play On-------------------------*/
 /*play.addEventListener('click', playCanvas);
 function playCanvas(){
@@ -196,7 +269,6 @@ function pauseCanvas(){
 /*------------------------Pause--------------------------*/
 
 /*-----------------------Restart-------------------------*/
-let timer;
 restart.addEventListener('click', resetCanvas);
 function resetCanvas(){
     score = 0;
@@ -218,8 +290,29 @@ function animate(){
     ctx.fillText('score: ' + score, 60, 34);
     gameFrame++;
     lives.update();
-    end.update();
-    timer = requestAnimationFrame(animate);
+    if (lives.const == 0){
+        bubblesArray = [];
+        animateGameOver();
+    } else {
+        timer = requestAnimationFrame(animate);
+    }
+    
+    
 }
-animate();
 /*-----------------------Animate-------------------------*/
+
+/*----------------------Game Over------------------------*/
+function animateGameOver(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    handleBubbles();
+    player.draw();
+    lives.update();
+    gameOver.play();
+    ctx.font = '35px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText('score: ' + score, 60, 34);
+    ctx.fillStyle = 'red';
+    ctx.font = '50px Habana';
+    ctx.fillText("GAME OVER", canvas.width/2 - 120, canvas.height/2);  
+}
+/*----------------------Game Over------------------------*/
