@@ -9,82 +9,12 @@ canvas.height = 650;
 let score = 0;
 let gameFrame = 0;
 let timer;
-let intro;
+let menuF;
+let playCan;
+let optionsF;
+let optionsCan;
+var volumePrevod = 1;
 /*--------------------------Ints--------------------------*/
-
-/*--------------------------Menu--------------------------*/
-class Menu {
-    constructor(){
-        this.x = 0;
-        this.y = 0;
-        this.width = 650;
-        this.height = 650;
-    }
-    draw(){
-        ctx.beginPath();
-        ctx.fillStyle = "gray";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.fill();
-        ctx.closePath();
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.fillStyle = 'black';
-        ctx.font = '35px Arial';
-        ctx.fillText("Menu", canvas.width/2 -45, canvas.height/2 - 200);
-        ctx.fill();
-        ctx.closePath();
-        ctx.stroke();
-    }
-}
-const menu = new Menu();
-
-class PlayB {
-    static DEFAULT_SIZE = 200;
-    constructor(){
-        this.x = canvas.width/2 - 75;
-        this.y = canvas.height/2 - 180;
-        this.width = 150;
-        this.height = 50;
-        this.size = PlayB.DEFAULT_SIZE;
-        this.pressed = false;
-
-    }
-    clicked(){
-        cancelAnimationFrame(intro);
-        animate();
-    }
-    draw() {
-        ctx.beginPath();
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.fill();
-        ctx.closePath();
-        ctx.stroke();
-        
-        ctx.beginPath();
-        ctx.fillStyle = 'white';
-        ctx.font = '35px Habana';
-        ctx.fillText('Play', this.x + 40, this.y + 38);
-        ctx.fill();
-        ctx.closePath();
-        ctx.stroke();
-    }
-    clickPlayb(mouseX, mouseY) {
-        if (mouseX >= playb.x && mouseX <= playb.x + playb.width && mouseY >= playb.y && mouseY <= playb.y + playb.height && this.pressed == true) { 
-            this.clicked();
-        } 
-    }
-}
-const playb = new PlayB();
-
-function animateMenu(){
-    menu.draw();
-    playb.draw();
-    intro = requestAnimationFrame(animateMenu);
-}
-animateMenu();
-/*--------------------------Menu--------------------------*/
 
 /*-------------------------Sounds-------------------------*/
 const break1 = document.createElement('audio');
@@ -95,15 +25,14 @@ const hurt = document.createElement('audio');
 hurt.src = 'https://opengameart.org/sites/default/files/ouch1_1.mp3';
 const gameOver = document.createElement('audio');
 gameOver.src = 'https://opengameart.org/sites/default/files/GameOver_2.ogg';
-break1.volume = 0.1;
-break2.volume = 0.1;
-hurt.volume = 0.1;
-gameOver.volume = 0.2;
+
 /*-------------------------Sounds-------------------------*/
 
 /*----------------------Game Objects----------------------*/
 const playersprite = new Image();
 playersprite.src = "GameObj/wiz1.png";
+const livessprite0 = new Image();
+livessprite0.src = "GameObj/0h.png";
 const livessprite1 = new Image();
 livessprite1.src = "GameObj/1h.png";
 const livessprite2 = new Image();
@@ -113,17 +42,6 @@ livessprite3.src = "GameObj/3h.png";
 /*----------------------Game Objects----------------------*/
 
 /*-----------------------Keybodard------------------------*/
-canvas.addEventListener('mousedown', (event) => { 
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    playb.pressed = true;
-    playb.clickPlayb(x, y);             
-});
-canvas.addEventListener('mouseup', () => { 
-    playb.pressed = false;             
-});
-
 const movement = {
     x: 50,
     y: 50,
@@ -240,7 +158,9 @@ class Lives {
         if(this.const == 1){
             ctx.drawImage(livessprite1, 608, 4, 40, 40);
         }
-
+        if(this.const == 0){
+            ctx.drawImage(livessprite0, 608, 4, 40, 40);
+        }
         for (let i = 0; i < bubblesArray.length; i++){
             bubblesArray[i].update();
             if (bubblesArray[i].x < 75){
