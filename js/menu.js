@@ -36,7 +36,7 @@ class PlayB {
     }
     clicked(){
         cancelAnimationFrame(menuF);
-        playCan = false;
+        menuCan = false;
         console.log(hurt.volume);
         animate();
     }
@@ -57,7 +57,7 @@ class PlayB {
         ctx.stroke();
     }
     clickPlayb(mouseX, mouseY) {
-        if (mouseX >= playb.x && mouseX <= playb.x + playb.width && mouseY >= playb.y && mouseY <= playb.y + playb.height && this.pressed == true && playCan == true) { 
+        if (mouseX >= playb.x && mouseX <= playb.x + playb.width && mouseY >= playb.y && mouseY <= playb.y + playb.height && this.pressed == true && menuCan == true) { 
             this.clicked();
         } 
     }
@@ -75,8 +75,8 @@ class OptionsB {
     }
     clicked(){
         cancelAnimationFrame(menuF);
-        playCan = false;
-        animateOptions();
+        menuCan = false;
+        animateOptions(optionsF);
     }
     draw() {
         ctx.beginPath();
@@ -95,7 +95,7 @@ class OptionsB {
         ctx.stroke();
     }
     clickOptionsb(mouseX, mouseY) {
-        if (mouseX >= optionsb.x && mouseX <= optionsb.x + optionsb.width && mouseY >= optionsb.y && mouseY <= optionsb.y + optionsb.height && this.pressed == true) { 
+        if (mouseX >= optionsb.x && mouseX <= optionsb.x + optionsb.width && mouseY >= optionsb.y && mouseY <= optionsb.y + optionsb.height && this.pressed == true && menuCan == true) { 
             this.clicked();
         } 
     }
@@ -107,8 +107,7 @@ function animateMenu(){
     menu.draw();
     playb.draw();
     optionsb.draw();
-    playCan = true;
-    volume = volumePrevod / 10;
+    menuCan = true;
     menuF = requestAnimationFrame(animateMenu);
 }
 animateMenu();
@@ -154,20 +153,14 @@ class Sounds {
         this.pressed = false;
     }
     clicked1(){
-        
-        //if (volume > 0){
-            volumePrevod--;
-        //}
-        optionsCan = false;
-        console.log(volume);
+        if (volumePrevod > 0){
+            soundCounter--;
+        }
     }
     clicked2(){
-        
-        //if (volume < 1){
-            volumePrevod++;
-        //}
-        optionsCan = false;
-        console.log(volume);
+        if (volumePrevod < 10){
+            soundCounter++;
+        }
     }
     draw(){
         ctx.beginPath();
@@ -188,6 +181,8 @@ class Sounds {
         ctx.closePath();
         ctx.stroke();
 /*---sipka vlevo---*/
+
+/*------text-------*/
         ctx.beginPath();
         ctx.fillStyle = 'black';
         ctx.font = '35px Arial';
@@ -195,6 +190,8 @@ class Sounds {
         ctx.fill();
         ctx.closePath();
         ctx.stroke();
+/*------text-------*/
+
 /*---sipka vpravo--*/
         ctx.beginPath();
         ctx.fillStyle = "black";
@@ -208,20 +205,51 @@ class Sounds {
     }
     clickTriangleb1(mouseX, mouseY){
         if (mouseX >= this.xpoint && mouseX <= this.xpoint + this.width && mouseY >= this.ypoint && mouseY <= this.ypoint + this.height && this.pressed == true && optionsCan == true) { 
+            soundSet.clicked1();
             this.clicked1();
+            clicked = true;
         }
     
     }
     clickTriangleb2(mouseX, mouseY){
         if (mouseX >= this.xpoint + this.distance && mouseX <= this.xpoint + this.distance + this.width && mouseY >= this.ypoint && mouseY <= this.ypoint + this.height && this.pressed == true && optionsCan == true) { 
+            soundSet.clicked2();
             this.clicked2();
+            clicked = true;
         }
     
     }
     
 }
-
 const sounds = new Sounds();
+
+let soundSet  = {
+    clicked1: function(){
+        if (volumePrevod > 0){
+            volumePrevod--;
+        }
+        console.log(volumePrevod);
+        sounds.clicked = false;
+        optionsCan = false;
+        break1.volume = volumePrevod/10;
+        break2.volume = volumePrevod/10;
+        hurt.volume = volumePrevod/10;
+        gameOver.volume = volumePrevod/10;
+    },
+    clicked2: function(){
+    if (volumePrevod < 10){
+        volumePrevod++;
+    }
+    console.log(volumePrevod);
+    sounds.clicked = false;
+    optionsCan = false;
+    break1.volume = volumePrevod/10;
+    break2.volume = volumePrevod/10;
+    hurt.volume = volumePrevod/10;
+    gameOver.volume = volumePrevod/10;
+    }
+}
+
 
 class Back {
     constructor(){
@@ -234,7 +262,7 @@ class Back {
     clicked(){
         cancelAnimationFrame(optionsF);
         optionsCan = false;
-        animateMenu();
+        animateMenu(menuF);
     }
     draw() {
         ctx.beginPath();
@@ -266,7 +294,6 @@ function animateOptions(){
     back.draw();
     optionsCan = true;
     optionsF = requestAnimationFrame(animateOptions);
-    volume = volumePrevod/10;
 }
 /*------------------------Options-------------------------*/
 
@@ -294,8 +321,5 @@ canvas.addEventListener('mouseup', () => {
 /*-----------------------Keybodard------------------------*/
 
 /*-------------------------Sounds-------------------------*/
-break1.volume = volume;
-break2.volume = volume;
-hurt.volume = volume;
-gameOver.volume = volume;
+
 /*-------------------------Sounds-------------------------*/

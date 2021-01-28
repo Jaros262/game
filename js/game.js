@@ -10,10 +10,13 @@ let score = 0;
 let gameFrame = 0;
 let timer;
 let menuF;
-let playCan;
+let menuCan;
 let optionsF;
 let optionsCan;
-var volumePrevod = 1;
+let volume;
+let soundCounter = 1;
+let volumePrevod = 1;
+let clicked = false;
 /*--------------------------Ints--------------------------*/
 
 /*-------------------------Sounds-------------------------*/
@@ -228,6 +231,8 @@ function animateGameOver(){
     player.draw();
     lives.update();
     gameOver.play();
+    menuCan = false;
+    optionsCan = false;
     ctx.font = '35px Arial';
     ctx.fillStyle = 'black';
     ctx.fillText('score: ' + score, 60, 34);
