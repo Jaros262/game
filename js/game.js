@@ -50,35 +50,35 @@ const movement = {
     y: 50,
     click: false
 }
+
+let keys = [];
+
 window.addEventListener("keydown", function(event){
-    movement.click = true;
-    player.move(event.key);
+    keys[event.key] = true;
 });
 window.addEventListener("keyup", function(event){
-    movement.click = false;
+    delete keys[event.key];
 })
 /*-----------------------Keyboard------------------------*/
 
 /*------------------------Player-------------------------*/
 
 class Player {
+    static DEFALUT_SIZE = 50;
     constructor(){
         this.x = canvas.width-600;
         this.y = canvas.height-600;
-        this.width = 50;
-        this.height = 50;
-        this.speed = 9;
-        this.moving = false;
-        this.position = this.x;
+        this.size = Player.DEFALUT_SIZE;
+        this.speed = 4.5;
     }
     draw(){
-        ctx.drawImage(playersprite, this.x, this.y, this.width, this.height);
+        ctx.drawImage(playersprite, this.x, this.y, this.size, this.size);
     }
-    move(key){
-        if (key == "ArrowRight" && player.x < 600){this.x += 50;}
-        if (key == "ArrowLeft" && player.x > 50){this.x -= 50;}
-        if (key == "ArrowUp" && player.y > 50){this.y -= 50;}
-        if (key == "ArrowDown" && player.y < 550){this.y += 50;}
+    move(){
+        if (keys['ArrowRight'] && this.x < 600){this.x += this.speed;}
+        if (keys['ArrowLeft'] && this.x > 50){this.x -= this.speed;}
+        if (keys['ArrowUp'] && this.y > 50){this.y -= this.speed;}
+        if (keys['ArrowDown'] && this.y < 550){ this.y += this.speed;}
     }
 }
 const player = new Player();
@@ -127,7 +127,7 @@ function handleBubbles(){
         if (bubblesArray[i].y < 0 - bubblesArray[i].radius * 2){
             bubblesArray.splice(i, 1);
         }
-        if (bubblesArray[i].distance < bubblesArray[i].radius + player.position){
+        if (bubblesArray[i].distance < bubblesArray[i].radius + player.size){
             if (!bubblesArray[i].counted){
                 if (bubblesArray[i].sound == 'sound1'){
                     break1.play();
@@ -208,6 +208,7 @@ function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     handleBubbles();
     player.draw(); 
+    player.move();
     ctx.font = '35px Arial';
     ctx.fillStyle = 'black';
     ctx.fillText('score: ' + score, 60, 34);
