@@ -16,8 +16,8 @@ class Menu {
 
         ctx.beginPath();
         ctx.fillStyle = 'black';
-        ctx.font = '45px Arial';
-        ctx.fillText("Menu", canvas.width/2 -45, canvas.height/2 - 200);
+        ctx.font = '45px Lives';
+        ctx.fillText("MENU", canvas.width/2 -58, canvas.height/2 - 200);
         ctx.fill();
         ctx.closePath();
         ctx.stroke();
@@ -27,17 +27,18 @@ const menu = new Menu();
 
 class PlayB {
     constructor(){
-        this.x = canvas.width/2 - 75;
+        this.x = canvas.width/2 - 90;
         this.y = canvas.height/2 - 180;
-        this.width = 150;
+        this.width = 180;
         this.height = 50;
         this.pressed = false;
-
+        this.over = false;
     }
     clicked(){
         cancelAnimationFrame(menuF);
         menuCan = false;
-        console.log(hurt.volume);
+        changeSound();
+        console.log('Sounds set to: ',hurt.volume);
         animate();
     }
     draw() {
@@ -50,8 +51,8 @@ class PlayB {
         
         ctx.beginPath();
         ctx.fillStyle = 'white';
-        ctx.font = '35px Habana';
-        ctx.fillText('Play', this.x + 40, this.y + 38);
+        ctx.font = '35px Pixels';
+        ctx.fillText('Play', this.x + 55, this.y + 34);
         ctx.fill();
         ctx.closePath();
         ctx.stroke();
@@ -66,11 +67,12 @@ const playb = new PlayB();
 
 class OptionsB {
     constructor(){
-        this.x = canvas.width/2 - 75;
+        this.x = canvas.width/2 - 90;
         this.y = canvas.height/2 - 120;
-        this.width = 150;
+        this.width = 180;
         this.height = 50;
         this.pressed = false;
+        this.over = false;
 
     }
     clicked(){
@@ -88,8 +90,8 @@ class OptionsB {
         
         ctx.beginPath();
         ctx.fillStyle = 'white';
-        ctx.font = '35px Habana';
-        ctx.fillText('Options', this.x + 20, this.y + 38);
+        ctx.font = '35px Pixels';
+        ctx.fillText('Options', this.x + 18, this.y + 34);
         ctx.fill();
         ctx.closePath();
         ctx.stroke();
@@ -99,8 +101,18 @@ class OptionsB {
             this.clicked();
         } 
     }
+    
 }
 const optionsb = new OptionsB();
+
+function changeSound(){
+    if(changed == false){
+            break1.volume = 0.1;
+            break2.volume = 0.1;
+            hurt.volume = 0.1;
+            gameOver.volume = 0.1;
+        }
+}
 
 function animateMenu(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -131,8 +143,8 @@ class Options {
 
         ctx.beginPath();
         ctx.fillStyle = 'black';
-        ctx.font = '45px Arial';
-        ctx.fillText("Options", canvas.width/2 -60, canvas.height/2 - 200);
+        ctx.font = '45px Lives';
+        ctx.fillText("OPTIONS", canvas.width/2 -100, canvas.height/2 - 200);
         ctx.fill();
         ctx.closePath();
         ctx.stroke();
@@ -156,16 +168,18 @@ class Sounds {
         if (volumePrevod > 0){
             soundCounter--;
         }
+        changed = true;
     }
     clicked2(){
         if (volumePrevod < 10){
             soundCounter++;
         }
+        changed = true;
     }
     draw(){
         ctx.beginPath();
         ctx.fillStyle = 'black';
-        ctx.font = '35px Arial';
+        ctx.font = '35px Lives';
         ctx.fillText("Sounds:", this.x, this.y);
         ctx.fill();
         ctx.closePath();
@@ -185,7 +199,7 @@ class Sounds {
 /*------text-------*/
         ctx.beginPath();
         ctx.fillStyle = 'black';
-        ctx.font = '35px Arial';
+        ctx.font = '35px Lives';
         ctx.fillText(volumePrevod, this.xpoint + 55, this.ypoint + 27);
         ctx.fill();
         ctx.closePath();
@@ -255,7 +269,7 @@ class Back {
     constructor(){
         this.x = canvas.width/2 - 75;
         this.y = canvas.height/2 + 200;
-        this.width = 150;
+        this.width = 180;
         this.height = 50;
         this.pressed = false;
     }
@@ -274,8 +288,8 @@ class Back {
         
         ctx.beginPath();
         ctx.fillStyle = 'white';
-        ctx.font = '35px Habana';
-        ctx.fillText('Back', this.x + 36, this.y + 38);
+        ctx.font = '35px Pixels';
+        ctx.fillText('Back', this.x + 50, this.y + 34);
         ctx.fill();
         ctx.closePath();
         ctx.stroke();
@@ -319,7 +333,3 @@ canvas.addEventListener('mouseup', () => {
     sounds.pressed = true;            
 });
 /*-----------------------Keybodard------------------------*/
-
-/*-------------------------Sounds-------------------------*/
-
-/*-------------------------Sounds-------------------------*/

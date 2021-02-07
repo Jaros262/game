@@ -7,7 +7,7 @@ const restart = document.getElementById('restart')
 canvas.width = 650;
 canvas.height = 650;
 let score = 0;
-let gameFrame = 0;
+let gameFrame = 1;
 let timer;
 let menuF;
 let menuCan;
@@ -17,6 +17,7 @@ let volume;
 let soundCounter = 1;
 let volumePrevod = 1;
 let clicked = false;
+let changed = false;
 /*--------------------------Ints--------------------------*/
 
 /*-------------------------Sounds-------------------------*/
@@ -34,6 +35,8 @@ gameOver.src = 'https://opengameart.org/sites/default/files/GameOver_2.ogg';
 /*----------------------Game Objects----------------------*/
 const playersprite = new Image();
 playersprite.src = "GameObj/wiz1.png";
+const bubblesprite = new Image();
+bubblesprite.src = "GameObj/rock.png";
 const livessprite0 = new Image();
 livessprite0.src = "GameObj/0h.png";
 const livessprite1 = new Image();
@@ -58,7 +61,7 @@ window.addEventListener("keydown", function(event){
 });
 window.addEventListener("keyup", function(event){
     delete keys[event.key];
-})
+});
 /*-----------------------Keyboard------------------------*/
 
 /*------------------------Player-------------------------*/
@@ -87,36 +90,37 @@ const player = new Player();
 /*-----------------------Objects-------------------------*/
 let bubblesArray = [];
 class Bubble {
+    static DEFALUT_SIZE = 50;
     constructor(){
         this.x = canvas.width + 50;
         this.y = (Math.random() * (canvas.height - 150)) + 75;
         this.radius = 25;
-        this.speed = Math.random() * 1.5 + 1;
+        this.speed = Math.random() * 1.5 + 0.5;
         this.distance;
         this.counted = false;
+        this.size = Bubble.DEFALUT_SIZE;
         this.sound = Math.random() <= 0.5 ? 'sound1' : 'sound2';
+        this.angle = 0;
     }
     update(){
         this.x -= this.speed;
         const dx = this.x - player.x;
         const dy = this.y - player.y;
         this.distance = Math.sqrt(dx*dx + dy*dy);
-        /*if (score> 1000){
-            this.speed++;
-        }*/
+        
     }
     draw(){
-        ctx.fillStyle = 'black';
         ctx.beginPath();
-        ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2);
-        ctx.fill();
+        ctx.drawImage(bubblesprite, this.x - this.radius, this.y - this.radius, this.size, this.size);
+        ctx.rotate(this.angle);
         ctx.closePath();
         ctx.stroke();
     }
 }
+const bubble = new Bubble();
 
 function handleBubbles(){
-    if(gameFrame % 50 ==0){
+    if(gameFrame % 50 == 0){
         bubblesArray.push(new Bubble());
     }
     for (let i = 0; i < bubblesArray.length; i++){
@@ -150,19 +154,23 @@ class Lives {
         this.const = 3;
     }
     update(){
+        ctx.beginPath();
+        ctx.font = '35px Lives';
         ctx.fillStyle = 'black';
-        ctx.fillText(lives.const, 568, 36);
+        ctx.fillText(lives.const, 566, 36);
+        ctx.closePath();
+        ctx.stroke();
         if(this.const == 3){
-            ctx.drawImage(livessprite3, 608, 5, 40, 40);
+            ctx.drawImage(livessprite3, 608, 6, 40, 40);
         }
         if(this.const == 2){
-            ctx.drawImage(livessprite2, 608, 4, 40, 40);
+            ctx.drawImage(livessprite2, 608, 5, 40, 40);
         }
         if(this.const == 1){
-            ctx.drawImage(livessprite1, 608, 4, 40, 40);
+            ctx.drawImage(livessprite1, 608, 5, 40, 40);
         }
         if(this.const == 0){
-            ctx.drawImage(livessprite0, 608, 4, 40, 40);
+            ctx.drawImage(livessprite0, 608, 5, 40, 40);
         }
         for (let i = 0; i < bubblesArray.length; i++){
             bubblesArray[i].update();
@@ -209,9 +217,12 @@ function animate(){
     handleBubbles();
     player.draw(); 
     player.move();
-    ctx.font = '35px Arial';
+    ctx.beginPath();
+    ctx.font = '35px Pixels';
     ctx.fillStyle = 'black';
-    ctx.fillText('score: ' + score, 60, 34);
+    ctx.fillText('score: ' + score, 64, 33);
+    ctx.closePath();
+    ctx.stroke();
     gameFrame++;
     lives.update();
     if (lives.const == 0){
@@ -234,11 +245,14 @@ function animateGameOver(){
     gameOver.play();
     menuCan = false;
     optionsCan = false;
-    ctx.font = '35px Arial';
+    ctx.beginPath();
+    ctx.font = '35px Pixels';
     ctx.fillStyle = 'black';
-    ctx.fillText('score: ' + score, 60, 34);
+    ctx.fillText('score: ' + score, 64, 33);
     ctx.fillStyle = 'red';
-    ctx.font = '50px Habana';
-    ctx.fillText("GAME OVER", canvas.width/2 - 120, canvas.height/2);  
+    ctx.font = '50px Pixels';
+    ctx.fillText("GAME OVER", canvas.width/2 - 120, canvas.height/2);
+    ctx.closePath();
+    ctx.stroke();  
 }
 /*----------------------Game Over------------------------*/

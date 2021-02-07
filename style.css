@@ -9,3 +9,11 @@ h3 {
     padding-left: 20px;
     padding-right: 20px;
 }
+@font-face {
+    font-family: Pixels;
+    src: url(Fonts/Pixelfy.ttf);
+}
+@font-face {
+    font-family: Lives;
+    src: url(Fonts/KarmaFuture.ttf);
+}
