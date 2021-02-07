@@ -1,13 +1,13 @@
 /*--------------------------Ints--------------------------*/
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
-const play = document.getElementById('start')
-const pause = document.getElementById('pause')
-const restart = document.getElementById('restart')
 canvas.width = 650;
 canvas.height = 650;
 let score = 0;
 let gameFrame = 1;
+let control = 1;
+let startF;
+let startCan;
 let timer;
 let menuF;
 let menuCan;
@@ -18,6 +18,7 @@ let soundCounter = 1;
 let volumePrevod = 1;
 let clicked = false;
 let changed = false;
+let fix = true;
 /*--------------------------Ints--------------------------*/
 
 /*-------------------------Sounds-------------------------*/
@@ -33,6 +34,8 @@ gameOver.src = 'https://opengameart.org/sites/default/files/GameOver_2.ogg';
 /*-------------------------Sounds-------------------------*/
 
 /*----------------------Game Objects----------------------*/
+const startsprite = new Image();
+startsprite.src = "GameObj/start.jpg";
 const playersprite = new Image();
 playersprite.src = "GameObj/wiz1.png";
 const bubblesprite = new Image();
@@ -78,10 +81,10 @@ class Player {
         ctx.drawImage(playersprite, this.x, this.y, this.size, this.size);
     }
     move(){
-        if (keys['ArrowRight'] && this.x < 600){this.x += this.speed;}
-        if (keys['ArrowLeft'] && this.x > 50){this.x -= this.speed;}
-        if (keys['ArrowUp'] && this.y > 50){this.y -= this.speed;}
-        if (keys['ArrowDown'] && this.y < 550){ this.y += this.speed;}
+        if (keys['d'] && this.x < 600){this.x += this.speed;}
+        if (keys['a'] && this.x > 50){this.x -= this.speed;}
+        if (keys['w'] && this.y > 50){this.y -= this.speed;}
+        if (keys['s'] && this.y < 550){ this.y += this.speed;}
     }
 }
 const player = new Player();
@@ -200,7 +203,7 @@ function pauseCanvas(){
 /*------------------------Pause--------------------------*/
 
 /*-----------------------Restart-------------------------*/
-restart.addEventListener('click', resetCanvas);
+/*restart.addEventListener('click', resetCanvas);
 function resetCanvas(){
     score = 0;
     lives.const = 3;
@@ -208,13 +211,16 @@ function resetCanvas(){
     console.log(bubblesArray);
     cancelAnimationFrame(timer);
     animate();
-}
+}*/
 /*-----------------------Restart-------------------------*/
 
 /*-----------------------Animate-------------------------*/
 function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     handleBubbles();
+    menuCan = false;
+    optionsCan = false;
+    startCan = false;
     player.draw(); 
     player.move();
     ctx.beginPath();
@@ -242,7 +248,7 @@ function animateGameOver(){
     handleBubbles();
     player.draw();
     lives.update();
-    gameOver.play();
+    if (fix == true){gameOver.play();}
     menuCan = false;
     optionsCan = false;
     ctx.beginPath();
@@ -253,6 +259,8 @@ function animateGameOver(){
     ctx.font = '50px Pixels';
     ctx.fillText("GAME OVER", canvas.width/2 - 120, canvas.height/2);
     ctx.closePath();
-    ctx.stroke();  
+    ctx.stroke();
+    fix = false; 
+    requestAnimationFrame(animateGameOver);
 }
 /*----------------------Game Over------------------------*/
